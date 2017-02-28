@@ -5,9 +5,9 @@ class Npc(Character):
 
   'Base class for the playable character'
 
-  def __init__(self, screen, characterName):
+  def __init__(self, screen, characterName, initialPosition=[0,0]):
  
-    Character.__init__(self, screen, characterName, "Sprites/Characters/Npc/" + characterName + "/" + characterName + "_idle.png")
+    Character.__init__(self, screen, characterName, "Sprites/Characters/Npc/" + characterName + "/" + characterName + "_idle.png", initialPosition)
     # General character arguments
 
     self.direction = 'left'

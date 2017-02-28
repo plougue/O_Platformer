@@ -5,22 +5,15 @@ class Pc(Character):
 
   'Base class for the playable character'
 
-  def __init__(self, screen, characterName):
+  def __init__(self, screen, characterName, initialPosition=[0,0]):
  
-    Character.__init__(self, screen, characterName, "Sprites/Characters/Pc/" + characterName + "/" + characterName + "_idle.png")
+    Character.__init__(self, screen, characterName, "Sprites/Characters/Pc/" + characterName + "/" + characterName + "_idle.png", initialPosition)
     # General character arguments
-    self.image = pygame.image.load("Sprites/Characters/Pc/" + self.name + "/" + self.name + "_idle.png").convert()
-    self.image.set_colorkey([34,177,76])
+    self.image = pygame.image.load("Sprites/Characters/Pc/" + self.name + "/" + self.name + "_idle.png").convert_alpha()
     self.position = self.image.get_rect()
-    self.direction = 'left'
+    self.lookingDirection = 'left'
   def Move(self,movements,resolution):
     Character.Move(self,movements,resolution)
-    if movements['right'] and self.direction == 'left':
-      self.image = pygame.transform.flip(self.image, True, False)
-      self.direction = 'right'
-    if movements['left'] and self.direction == 'right':
-      self.image = pygame.transform.flip(self.image, True, False)
-      self.direction = 'left'
 '''    
     # X-movement related arguments 
     self.xSpeed = 0

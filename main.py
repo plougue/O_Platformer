@@ -1,11 +1,12 @@
 from World import *
   
 
-worldResolution = [1000,600]
-worldColor = [255,255,255]
+worldResolution = [1200,700]
+#worldColor = [255,255,255]
+worldBackground = "CalmValley"
 worldCharacterName = "Markus"
 worldFps = 60
-gameWorld = World(worldResolution, worldColor, worldCharacterName, worldFps)
+gameWorld = World(worldResolution, worldBackground, worldCharacterName, worldFps)
 gameWorld.MainLoop()
 
 '''

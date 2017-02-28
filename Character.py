@@ -2,13 +2,16 @@ import pygame
 
 class Character:
   'Base class for the playable character'
-  def __init__(self, screen, characterName, spritePath):
+  def __init__(self, screen, characterName, spritePath, initialPosition=[0,0]):
   
     # General character arguments
     self.screen = screen
     self.name = characterName
     self.image = pygame.image.load(spritePath).convert_alpha()
     self.position = self.image.get_rect()
+    self.position[0] = initialPosition[0]
+    self.position[1] = initialPosition[1]
+    self.lastFramePosition = self.position
     
     # X-movement related arguments 
     self.xSpeed = 0
@@ -29,6 +32,7 @@ class Character:
     self.maxJumpSpeedReached = 1   # [BOOL] has the character reached his max speed (then he no longers accelerates)
     self.canJump = 0    # [BOOL] can the character jump ?
     self.direction = 'right'
+    self.lookingDirection = 'right'
     
   #############################################################################
   ##    CHANGES THE STATE ACCORDINGLY IF A COLLISION OCCURS                  ##
@@ -45,6 +49,7 @@ class Character:
   def blit(self): 
     self.screen.blit(self.image, self.position)
   def Move(self,movements, resolution):
+    self.lastFramePosition = self.position
     ### X MOVEMENt MANAGEMENT
     if(movements['left']  and (not(movements['right']))):
       if(self.xSpeed > 0):
@@ -84,8 +89,16 @@ class Character:
     
     ## MODIFY POSITION
     self.position = self.position.move(self.xSpeed,self.ySpeed) 
-    
+    if movements['right'] and self.lookingDirection == 'left':
+      self.image = pygame.transform.flip(self.image, True, False)
+      self.lookingDirection = 'right'
+    if movements['left'] and self.lookingDirection == 'right':
+      self.image = pygame.transform.flip(self.image, True, False)
+      self.lookingDirection = 'left'
+ 
   
+  def GetLastFramePosition(self):
+    return self.lastFramePosition
 
   def GetPosition(self):
     return self.position
