@@ -4,7 +4,7 @@ from World import *
 worldResolution = [1200,700]
 #worldColor = [255,255,255]
 worldBackground = "CalmValley"
-worldCharacterName = "Markus"
+worldCharacterName = "Yvan"
 worldFps = 60
 gameWorld = World(worldResolution, worldBackground, worldCharacterName, worldFps)
 gameWorld.MainLoop()

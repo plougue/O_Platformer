@@ -24,13 +24,17 @@ class Character:
     self.gravity = 0.5
     
     # Jump related arguments
+    self.numberOfJumps = 2
     self.ySpeed = 0
     self.yMaxSpeed = 10
     self.jumpSpeed = 6    # Initial jump speed
-    self.jumpAcceleration = 2   # How fast the character gains speed until maxJumpSpeed
-    self.maxJumpSpeed = 12
-    self.maxJumpSpeedReached = 1   # [BOOL] has the character reached his max speed (then he no longers accelerates)
-    self.canJump = 0    # [BOOL] can the character jump ?
+    self.jumpAcceleration = 1/0.7   # How fast the character gains speed until maxJumpSpeed
+    self.maxAccelerationFrames = 7
+    self.accelerationFramesRemaining = 0
+    self.canAccelerateJump = 1   # [BOOL] can the character accelerate his jump ? 
+    self.remainingJumps = 0    # [BOOL] can the character jump ?
+    self.nextJumpsRatio = 0.8   # How reduced is the speed given by the jumps after the first ?
+    self.jumpFreze = 0   # The jump is frozen until the up command is cancelled
     self.direction = 'right'
     self.lookingDirection = 'right'
     
@@ -38,13 +42,23 @@ class Character:
   ##    CHANGES THE STATE ACCORDINGLY IF A COLLISION OCCURS                  ##
   #############################################################################
   def DeclareCollision(self, directions):
-    if directions['down'] or directions['up']:
+    # The and . . .  prevents to be stuck
+    if (directions['down'] and self.ySpeed > 0) or (directions['up'] and self.ySpeed < 0) :
       self.ySpeed = 0
     if directions['down']:
-      self.canJump = 1
-      self.maxJumpSpeedReached = 0
-    if directions['left'] or directions['right']:
+      self.remainingJumps = self.numberOfJumps
+      self.canAccelerateJump = 0 
+      self.accelerationFramesRemaining = self.maxAccelerationFrames
+      print("touching the floor")
+
+
+    # The and . . .  prevents to be stuck
+    if (directions['left'] and self.xSpeed < 0)  or (directions['right'] and self.xSpeed > 0) : 
       self.xSpeed = 0
+    # Basically, if the character falls down he loses a jump
+    if self.remainingJumps == self.numberOfJumps and not(directions['down']): 
+      self.remainingJumps = self.remainingJumps - 1
+      print("falling !!")
 
   def blit(self): 
     self.screen.blit(self.image, self.position)
@@ -52,11 +66,11 @@ class Character:
     self.lastFramePosition = self.position
     ### X MOVEMENt MANAGEMENT
     if(movements['left']  and (not(movements['right']))):
-      if(self.xSpeed > 0):
+      if(self.xSpeed >= 0):
         self.xSpeed -= self.xStartAcceleration
       self.xSpeed -= self.xAcceleration
     elif(movements['right'] and (not(movements['left']))):
-      if(self.xSpeed < 0):
+      if(self.xSpeed <= 0):
         self.xSpeed += self.xStartAcceleration
       self.xSpeed += self.xAcceleration 
     elif(self.xSpeed > 0):
@@ -74,15 +88,28 @@ class Character:
       self.xSpeed = -self.xMaxSpeed 
       
     ### JUMPING MANAGEMENT
-    if(movements['up'] and self.ySpeed == 0 and self.canJump):
-      self.ySpeed = -self.jumpSpeed
-    elif(movements['up'] and self.ySpeed < 0 and not(self.maxJumpSpeedReached)):
-      self.ySpeed -= self.jumpAcceleration
-      self.canJump = 0
 
-    if(self.ySpeed < -self.maxJumpSpeed):
-      self.ySpeed = - self.maxJumpSpeed
-      self.maxJumpSpeedReached = 1
+    # Once you stop accelerating it's too late
+    if not(movements['up']):
+      self.jumpFreeze = 0
+      if self.remainingJumps < self.numberOfJumps :
+        self.canAccelerateJump = 0
+        self.accelerationFramesRemaining = 0
+    if self.accelerationFramesRemaining == 0:
+      self.canAccelerateJump = 0
+    if(movements['up'] and self.remainingJumps > 0 and not(self.canAccelerateJump) and not(self.jumpFreeze)):
+      print("jumping (" + str(self.remainingJumps)+ ")")
+      if (self.remainingJumps < self.numberOfJumps) :
+        self.ySpeed = -self.nextJumpsRatio * self.jumpSpeed
+      else :
+        self.ySpeed = -self.jumpSpeed
+      self.remainingJumps = self.remainingJumps - 1
+      self.canAccelerateJump = 1 
+      self.accelerationFramesRemaining = self.maxAccelerationFrames
+      self.jumpFreeze = 1
+    elif(movements['up'] and self.ySpeed < 0 and self.canAccelerateJump):
+      self.ySpeed -= self.jumpAcceleration
+      self.accelerationFramesRemaining = self.accelerationFramesRemaining - 1
 
     ## GRAVITY
     self.ySpeed += self.gravity
