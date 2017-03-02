@@ -1,6 +1,7 @@
 
 from P_Markus import *
 from P_Yvan import *
+from P_Luc import *
 from Pc import *
 from Npc import *
 from Obstacle import *
@@ -27,7 +28,7 @@ class World:
 
     self.InitiateObstacles()
     self.InitiateNpcs()
-    self.characterPool = {"Markus" : P_Markus(self.screen), "Yvan" : P_Yvan(self.screen)}
+    self.characterPool = {"Markus" : P_Markus(self.screen), "Yvan" : P_Yvan(self.screen), "Luc" : P_Luc(self.screen)}
     self.pc = self.characterPool[self.characterName]
   
     self.pc.blit()
@@ -89,7 +90,8 @@ class World:
 
   # Checks if (position1, size1) is aligned to (position2, size2)
   def AreAligned(self,position1, size1, position2, size2) :
-      if (position1 > position2 and position1 < position2 + size2) or (position1 + size1 > position2 and position1 + size1 < position2 + size2):
+      if (position1 > position2 and position1 < position2 + size2) or (position1 + size1 > position2 and position1 + size1 < position2 + size2) \
+        or (position1 <= position2 and position1 + size1 >= position2 + size2):
         return True
       else:
         return False
@@ -137,6 +139,7 @@ class World:
           elif charPosition[1] <= charLastFramePosition[1]:
             charPosition[1] = obstaclePosition[1] + obstacleSize[1]
             collision['up'] = True
+
       # Soft Collisions (objects are on top of each other)
       if yAligned and charPosition[0] == obstaclePosition[0] - charSize[0]:
         collision['right'] = True
@@ -150,9 +153,9 @@ class World:
     character.SetPosition(charPosition)
  
   def InitiateNpcs(self):
-    #self.npcList.append(Npc(self.screen, "Appendix1"))
-    #self.npcList.append(Npc(self.screen, "SploshyMan",[200,400]))
-    #self.npcList.append(Npc(self.screen, "Appendix1",[500,500]))
+    self.npcList.append(Npc(self.screen, "Appendix1"))
+    self.npcList.append(Npc(self.screen, "SploshyMan",[200,400]))
+    self.npcList.append(Npc(self.screen, "Appendix1",[500,500]))
     return 0
 
   def InitiateObstacles(self):
@@ -160,3 +163,6 @@ class World:
     self.obstacleList.append(Obstacle(self.screen,"BricWall",[800,300], [6,2]))
     self.obstacleList.append(Obstacle(self.screen,"BricWall",[400,300], [2,2]))
     self.obstacleList.append(Obstacle(self.screen,"BricWall",[0,100], [10,3]))
+    self.obstacleList.append(Obstacle(self.screen,"BricWall",[0,650], [40,2]))
+
+    

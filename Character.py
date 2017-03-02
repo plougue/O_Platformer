@@ -24,7 +24,7 @@ class Character:
     self.gravity = 0.5
     
     # Jump related arguments
-    self.numberOfJumps = 2
+    self.numberOfJumps = 3
     self.ySpeed = 0
     self.yMaxSpeed = 10
     self.jumpSpeed = 6    # Initial jump speed
@@ -42,23 +42,19 @@ class Character:
   ##    CHANGES THE STATE ACCORDINGLY IF A COLLISION OCCURS                  ##
   #############################################################################
   def DeclareCollision(self, directions):
-    # The and . . .  prevents to be stuck
     if (directions['down'] and self.ySpeed > 0) or (directions['up'] and self.ySpeed < 0) :
       self.ySpeed = 0
+    if (directions['left'] and self.xSpeed < 0)  or (directions['right'] and self.xSpeed > 0) : 
+      self.xSpeed = 0
+      
     if directions['down']:
       self.remainingJumps = self.numberOfJumps
       self.canAccelerateJump = 0 
       self.accelerationFramesRemaining = self.maxAccelerationFrames
-      print("touching the floor")
 
-
-    # The and . . .  prevents to be stuck
-    if (directions['left'] and self.xSpeed < 0)  or (directions['right'] and self.xSpeed > 0) : 
-      self.xSpeed = 0
     # Basically, if the character falls down he loses a jump
     if self.remainingJumps == self.numberOfJumps and not(directions['down']): 
       self.remainingJumps = self.remainingJumps - 1
-      print("falling !!")
 
   def blit(self): 
     self.screen.blit(self.image, self.position)
