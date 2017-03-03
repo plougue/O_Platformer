@@ -21,3 +21,30 @@ class Npc(Character):
       if self.position[0] <= 0:
         self.direction = 'right'
   
+  def blit(self):
+    Character.blit(self)
+    totalLineLength = 50
+
+    linePosition = [0,0]
+    characterPosition =  self.GetPosition()
+    characterSize = self.GetSize()
+    linePosition[0] = characterPosition[0] + (characterSize[0] - totalLineLength) / 2 
+    linePosition[1] = characterPosition[1] - 30
+    greenLineLength = 40 * self.currentHp / self.maxHp
+    greenLineEndPosition = [0,0]
+    lineEndPosition = [0,0]
+    greenLineEndPosition[1] = linePosition[1]
+    lineEndPosition[1] = linePosition[1]
+    greenLineEndPosition[0] = linePosition[0] + greenLineLength
+    lineEndPosition[0] = linePosition[0] + totalLineLength
+    
+    if self.currentHp > 0 :
+      greenLine = pygame.draw.line(self.screen, [0,200,0], linePosition, greenLineEndPosition,10)
+    if self.currentHp < self.maxHp :
+      redLine = pygame.draw.line(self.screen, [200,0,0], greenLineEndPosition, lineEndPosition,10)
+    print(50*"-")
+    print(linePosition)
+    print(greenLineEndPosition)
+    print(lineEndPosition)
+    print(greenLineLength)
+

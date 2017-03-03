@@ -24,6 +24,7 @@ class World:
     self.gravity = 1
     self.characterName = characterName
     self.fps = fps
+    self.actualFps = fps # will be calculated every frame
 
     # HUD IMAGES
     self.fullHeartImage = pygame.image.load("Sprites/Hud/Health/FullHeart.png")
@@ -46,7 +47,8 @@ class World:
     pygame.key.set_repeat(400,30)
     clock = pygame.time.Clock()
     while stayInLoop:
-      clock.tick(50)
+      frameDuration = clock.tick(self.fps)
+      self.actualFps = 1000.0/frameDuration
       movementsKeys = {'left' : 0, 'right' : 0, 'up' : 0, 'sdown' : 0}
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -237,6 +239,10 @@ class World:
         self.screen.blit(self.fullHeartImage, heartPosition)
     if self.pc.IsDead() :
       self.screen.blit(self.pc.deathSprite, [self.resolution[0] - 50 -  self.pc.deathSprite.get_width(), 1.2 * heartHeight])
+    myfont = pygame.font.SysFont("Comic Sans MS", 30)
+    label = myfont.render("fps: " + str(int(self.actualFps)), 1, [200,0,200])
+    self.screen.blit(label, (0,0))
+
 
   def InitiateNpcs(self):
     self.npcList.append(Npc(self.screen, "Appendix1"))
