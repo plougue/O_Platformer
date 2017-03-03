@@ -9,7 +9,7 @@ class W_OtherWorld(World):
     World.__init__(self, [1300,700], "DarkGrey", "Markus", 60)
  
   def InitiateNpcs(self):
-    self.npcList.append(Npc(self.screen, "Appendix1"))
+    self.npcList.append(Npc(self.screen, "Appendix1", [200,500]))
     self.npcList.append(Npc(self.screen, "SploshyMan",[200,400]))
     self.npcList.append(Npc(self.screen, "Appendix1",[500,500]))
     return 1

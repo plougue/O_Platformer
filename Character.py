@@ -12,6 +12,14 @@ class Character:
     self.position[0] = initialPosition[0]
     self.position[1] = initialPosition[1]
     self.lastFramePosition = self.position
+
+
+    # General combat arguments
+    self.dead = 0
+    self.maxHp = 6
+    self.currentHp = 6
+    self.invulnerabilityFrameDuration = 40
+    self.invulnerabilityRemainingFrames = 0
     
     # X-movement related arguments 
     self.xSpeed = 0
@@ -58,8 +66,19 @@ class Character:
 
   def blit(self): 
     self.screen.blit(self.image, self.position)
-  def Move(self,movements, resolution):
+
+  def Act(self, actions, resolution, projectileList) :
+    if(actions['attack']) :
+      self.Attack(projectileList)
+
+  def Move(self,movements, resolution) :
+
     self.lastFramePosition = self.position
+
+    ### Change frame counters
+    if self.invulnerabilityRemainingFrames > 0 :
+      self.invulnerabilityRemainingFrames = self.invulnerabilityRemainingFrames - 1
+
     ### X MOVEMENt MANAGEMENT
     if(movements['left']  and (not(movements['right']))):
       if(self.xSpeed >= 0):
@@ -115,11 +134,27 @@ class Character:
     if movements['right'] and self.lookingDirection == 'left':
       self.image = pygame.transform.flip(self.image, True, False)
       self.lookingDirection = 'right'
+      self.direction = 'right'
     if movements['left'] and self.lookingDirection == 'right':
       self.image = pygame.transform.flip(self.image, True, False)
       self.lookingDirection = 'left'
+      self.direction = 'left'
  
+  def Attack(self, projectileList):
+    return 0
   
+  def TakeDamage(self, damageValue):
+    if self.invulnerabilityRemainingFrames == 0 :
+      if damageValue >= self.currentHp :
+        self.Die()
+      else :
+        self.currentHp = self.currentHp - damageValue
+      self.invulnerabilityRemainingFrames = self.invulnerabilityFrameDuration
+
+  def Die(self):
+    self.currentHp = 0
+    self.dead = 1
+
   def GetLastFramePosition(self):
     return self.lastFramePosition
 
@@ -129,5 +164,17 @@ class Character:
   def GetSize(self):
     return (self.image.get_width(), self.image.get_height())
   
+  def GetName(self):
+    return self.name
+
   def SetPosition(self,newPosition):
     self.position = newPosition
+
+  def GetMaxHp(self) :
+    return self.maxHp
+
+  def GetCurrentHp(self) :
+    return self.currentHp
+
+  def IsDead(self):
+    return self.dead
