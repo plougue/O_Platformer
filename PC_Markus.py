@@ -10,8 +10,8 @@ class PC_Markus(Pc):
     Pc.__init__(self,screen, "Markus", initialPosition)
 
     # General combat arguments
-    self.maxHp = 3
-    self.currentHp = 3 
+    self.maxHp = 2
+    self.currentHp = 2 
 
     # Attack related arguments
     self.framesCharged = 0
@@ -45,7 +45,7 @@ class PC_Markus(Pc):
     self.chargingFireballSpriteList.append(pygame.image.load("Sprites/Projectiles/Fireball/Fireball_charge_5.png"))
     self.chargingFireballSpriteList.append(pygame.image.load("Sprites/Projectiles/Fireball/Fireball_charge_6.png"))
 
-    self.frameToSpriteList = [1,5,10,30,60,120,240]
+    self.frameToSpriteList = [5,10,30,60,120,240,400]
     self.spriteNumber = 0
 
     for i in range(self.displayTamponSize):

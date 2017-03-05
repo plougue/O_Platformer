@@ -6,7 +6,7 @@ class PR_Fireball(Projectile):
     Projectile.__init__(self, screen, "Fireball", initialPosition, direction)
     self.image = pygame.image.load("Sprites/Projectiles/Fireball/Fireball_" + str(spriteNumber+1) + "_idle.png")
     print(spriteNumber)
-    self.xSpeed = 10
+    self.xSpeed = 12
 
     spriteToDamage = [1,1,2,2,3,3]
     self.damageDealt = 1 + spriteToDamage[spriteNumber]

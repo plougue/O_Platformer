@@ -10,7 +10,7 @@ class NPC_SploshyMan(Npc):
     Npc.__init__(self,screen, "SploshyMan", initialPosition)
 
     # General combat arguments
-    self.invulnerabilityFrameDuration = 10
+    self.invulnerabilityFrameDuration = 0
     
 
 

@@ -8,7 +8,7 @@ class PR_Shuriken(Projectile):
     self.damageDealt = 1
     self.ownerName = owner
     self.rotation = 0
-    self.rotationSpeed = 25
+    self.rotationSpeed = 15
 
   def blit(self):
     if self.direction == 'right' :

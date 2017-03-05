@@ -234,8 +234,9 @@ class World:
       for currentProjectile in self.projectileList :
         projectileCollision = self.CollidesWith(item, currentProjectile, False)
         if(projectileCollision['left'] or projectileCollision['right'] or projectileCollision['up'] or projectileCollision['down']) :
-          if(currentProjectile.GetOwnerName() != item.GetName()) :
+          if(currentProjectile.GetOwnerName() != item.GetName()) and not(item.IsImmuneToProjectile(currentProjectile)) :
             item.TakeDamage(currentProjectile.GetDamageDealt())
+            item.AddProjectileImmunity(currentProjectile)
 
     item.DeclareCollision(collision) 
     item.SetPosition(itemPosition)

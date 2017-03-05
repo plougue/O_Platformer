@@ -64,6 +64,7 @@ class PC_Luc(Pc):
   def Attack(self, projectileList) :
     characterSize = self.GetSize()
     if self.attackRefreshingRemainingFrames == 0:
+      self.stick = PR_Stick(self.screen, self.name)
       stickDuration = self.attackFrameDuration
       stickPosition = [0,0]
       stickSize = self.stick.GetSize()

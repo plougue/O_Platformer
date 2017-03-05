@@ -21,6 +21,8 @@ class Character:
     self.currentHp = 6
     self.invulnerabilityFrameDuration = 40
     self.invulnerabilityRemainingFrames = 0
+    self.projectileImmunityList = []
+    self.subjectToProjectileImmunity = True
     
     # X-movement related arguments 
     self.xSpeed = 0
@@ -189,6 +191,13 @@ class Character:
   def SetPosition(self,newPosition):
     self.position[1] = newPosition[1]
     self.position[0] = newPosition[0]
+
+  def AddProjectileImmunity(self,projectile) :
+    if(self.subjectToProjectileImmunity) :
+      self.projectileImmunityList.append(projectile)
+
+  def IsImmuneToProjectile(self,projectile) :
+    return (projectile in self.projectileImmunityList)
 
   def GetMaxHp(self) :
     return self.maxHp

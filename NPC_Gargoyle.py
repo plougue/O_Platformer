@@ -10,7 +10,7 @@ class NPC_Gargoyle(Npc):
     Npc.__init__(self,screen, "Gargoyle", initialPosition)
 
     # General combat arguments
-    self.invulnerabilityFrameDuration = 200
+    self.invulnerabilityFrameDuration = 0
 
     self.currentHp = 6
     self.maxHp = 6

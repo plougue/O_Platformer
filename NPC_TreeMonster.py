@@ -14,6 +14,7 @@ class NPC_TreeMonster(Npc):
     self.maxHp = 300
     self.currentHp = 300
     self.invulnerabilityFrameDuration = 0
+    self.subjectToProjectileImmunity = False
 
     self.direction = direction
     # X movement related arguments
