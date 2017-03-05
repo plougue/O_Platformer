@@ -18,18 +18,18 @@ class PC_Luc(Pc):
     self.stick = PR_Stick(self.screen, self.name)
 
     # X-movement related arguments 
-    self.xMaxSpeed = 30
-    self.xStartAcceleration = 4   # How much speed the first input gives
+    self.xMaxSpeed = 25
+    self.xStartAcceleration = 3   # How much speed the first input gives
     self.xSlowDown = self.xMaxSpeed/10.0    # How quickly the character slows down
     self.xAcceleration = self.xMaxSpeed/30.0    # How quickly he accelerates
     
     # Gravity
-    self.gravity = 0.8
+    self.gravity = 0.55
     
     # Jump related arguments
     self.numberOfJumps = 4
     self.ySpeed = 0
-    self.jumpSpeed = 10    # Initial jump speed
+    self.jumpSpeed = 7.5   # Initial jump speed
     self.jumpAcceleration = 0.6   # How fast the character gains speed until maxJumpSpeed
     self.maxAccelerationFrames = 10
     self.accelerationFramesRemaining = 0
@@ -41,17 +41,16 @@ class PC_Luc(Pc):
     self.lookingDirection = 'left'
 
     # General character arguments
-    self.maxHp = 5
-    self.currentHp = 5
+    self.maxHp = 7
+    self.currentHp = 7
  
-  def Act(self, movements, resolution, projectileList):
-    Pc.Act(self, movements, resolution, projectileList)
+  def Act(self, movements, projectileList):
+    Pc.Act(self, movements, projectileList)
     if self.attackRefreshingRemainingFrames > 0 : 
       self.attackRefreshingRemainingFrames = self.attackRefreshingRemainingFrames - 1
     if not (self.stick.IsActive()) and self.stick in projectileList :
       projectileList.remove(self.stick)
       print("removing stick")
-    print(self.stick.IsActive()) 
     characterSize = self.GetSize()
     stickPosition = [0,0]
     stickSize = self.stick.GetSize()
@@ -80,3 +79,7 @@ class PC_Luc(Pc):
       projectileList.append(self.stick)
       self.attackRefreshingRemainingFrames = self.attackRefreshingFrameDuration
     return 1
+
+  def Die(self):
+    self.stick.SetActive(False) 
+    Pc.Die(self)

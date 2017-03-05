@@ -27,18 +27,21 @@ class Projectile:
     # Gravity
     self.gravity = 0
     
-    
+    self.spriteDirection = 'left'  
   #############################################################################
   ##    CHANGES THE STATE ACCORDINGLY IF A COLLISION OCCURS                  ##
   #############################################################################
   def DeclareCollision(self, directions):
     if (directions['right'] or directions['up'] or directions['down'] or directions['left']) :
       self.toBeDeleted = 1
+
   def blit(self):
     if not self.toBeDeleted:
-      self.screen.blit(self.image, self.position)
-
-  def Move(self, resolution) :
+      if self.direction == self.spriteDirection :
+        self.screen.blit(self.image, self.position)
+      else :
+        self.screen.blit(pygame.transform.flip(self.image, True, False), self.position)
+  def Move(self) :
     if self.frameDuration ==  0 :
       self.toBeDeleted = 1
     if not self.toBeDeleted :

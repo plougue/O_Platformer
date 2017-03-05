@@ -13,6 +13,7 @@ class Character:
     self.position[1] = initialPosition[1]
     self.lastFramePosition = self.position
 
+    self.spriteDirection = 'left'
 
     # General combat arguments
     self.dead = 0
@@ -42,7 +43,7 @@ class Character:
     self.canAccelerateJump = 1   # [BOOL] can the character accelerate his jump ? 
     self.remainingJumps = 0    # [BOOL] can the character jump ?
     self.nextJumpsRatio = 0.8   # How reduced is the speed given by the jumps after the first ?
-    self.jumpFreze = 0   # The jump is frozen until the up command is cancelled
+    self.jumpFreeze = 0   # The jump is frozen until the up command is cancelled
     self.direction = 'right'
     self.lookingDirection = 'right'
     
@@ -64,14 +65,36 @@ class Character:
     if self.remainingJumps == self.numberOfJumps and not(directions['down']): 
       self.remainingJumps = self.remainingJumps - 1
 
-  def blit(self): 
-    self.screen.blit(self.image, self.position)
+  def blit(self):
+    if self.direction != self.spriteDirection :
+      self.screen.blit(pygame.transform.flip(self.image, True, False), self.position)
+    else :
+      self.screen.blit(self.image, self.position)
 
-  def Act(self, actions, resolution, projectileList) :
+  def DisplayHp(self):
+    totalLineLength = 50
+    linePosition = [0,0]
+    characterPosition =  self.GetPosition()
+    characterSize = self.GetSize()
+    linePosition[0] = characterPosition[0] + (characterSize[0] - totalLineLength) / 2 
+    linePosition[1] = characterPosition[1] - 30
+    greenLineLength = totalLineLength * (float(self.currentHp) / self.maxHp)
+    greenLineEndPosition = [0,0]
+    lineEndPosition = [0,0]
+    greenLineEndPosition[1] = linePosition[1]
+    lineEndPosition[1] = linePosition[1]
+    greenLineEndPosition[0] = linePosition[0] + greenLineLength
+    lineEndPosition[0] = linePosition[0] + totalLineLength
+    if self.currentHp > 0 :
+      greenLine = pygame.draw.line(self.screen, [0,200,0], linePosition, greenLineEndPosition,10)
+    if self.currentHp < self.maxHp :
+      redLine = pygame.draw.line(self.screen, [200,0,0], greenLineEndPosition, lineEndPosition,10)
+    
+  def Act(self, actions, projectileList) :
     if(actions['attack']) :
       self.Attack(projectileList)
 
-  def Move(self,movements, resolution) :
+  def Move(self,movements) :
 
     self.lastFramePosition = self.position
 
@@ -113,7 +136,6 @@ class Character:
     if self.accelerationFramesRemaining == 0:
       self.canAccelerateJump = 0
     if(movements['up'] and self.remainingJumps > 0 and not(self.canAccelerateJump) and not(self.jumpFreeze)):
-      print("jumping (" + str(self.remainingJumps)+ ")")
       if (self.remainingJumps < self.numberOfJumps) :
         self.ySpeed = -self.nextJumpsRatio * self.jumpSpeed
       else :
@@ -125,18 +147,15 @@ class Character:
     elif(movements['up'] and self.ySpeed < 0 and self.canAccelerateJump):
       self.ySpeed -= self.jumpAcceleration
       self.accelerationFramesRemaining = self.accelerationFramesRemaining - 1
-
     ## GRAVITY
     self.ySpeed += self.gravity
     
     ## MODIFY POSITION
     self.position = self.position.move(self.xSpeed,self.ySpeed) 
     if movements['right'] and self.lookingDirection == 'left':
-      self.image = pygame.transform.flip(self.image, True, False)
       self.lookingDirection = 'right'
       self.direction = 'right'
     if movements['left'] and self.lookingDirection == 'right':
-      self.image = pygame.transform.flip(self.image, True, False)
       self.lookingDirection = 'left'
       self.direction = 'left'
  
@@ -168,7 +187,8 @@ class Character:
     return self.name
 
   def SetPosition(self,newPosition):
-    self.position = newPosition
+    self.position[1] = newPosition[1]
+    self.position[0] = newPosition[0]
 
   def GetMaxHp(self) :
     return self.maxHp

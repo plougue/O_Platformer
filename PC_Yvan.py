@@ -16,19 +16,19 @@ class PC_Yvan(Pc):
 
     # X-movement related arguments 
     self.xMaxSpeed = 15
-    self.xStartAcceleration = 4   # How much speed the first input gives
+    self.xStartAcceleration = 2   # How much speed the first input gives
     self.xSlowDown = self.xMaxSpeed/15.0    # How quickly the character slows down
     self.xAcceleration = self.xMaxSpeed/15.0    # How quickly he accelerates
     
     # Gravity
-    self.gravity = 1.2
+    self.gravity = 0.95
     
     # Jump related arguments
     self.numberOfJumps = 1
     self.ySpeed = 0
-    self.jumpSpeed = 25    # Initial jump speed
-    self.jumpAcceleration = 0.6   # How fast the character gains speed until maxJumpSpeed
-    self.maxAccelerationFrames = 10
+    self.jumpSpeed = 21.5    # Initial jump speed
+    self.jumpAcceleration = 0.45   # How fast the character gains speed until maxJumpSpeed
+    self.maxAccelerationFrames = 14
     self.accelerationFramesRemaining = 0
     self.canAccelerateJump = 1   # [BOOL] can the character accelerate his jump ? 
     self.remainingJumps = 0    # [BOOL] can the character jump ?
@@ -38,8 +38,8 @@ class PC_Yvan(Pc):
     self.lookingDirection = 'left'
 
     # General character arguments
-    self.maxHp = 3
-    self.currentHp = 3
+    self.maxHp = 4
+    self.currentHp = 4
 
   def Attack(self, projectileList):
     if self.attackRefreshingRemainingFrames == 0 :
@@ -47,15 +47,16 @@ class PC_Yvan(Pc):
       characterSize = self.GetSize()
       shurikenPosition[1] = self.position[1] + 20
       if self.direction == 'left' :
-        shurikenPosition[0] = self.position[0]
+        shurikenPosition[0] = self.position[0] - characterSize[0] / 2
       else :
-        shurikenPosition[0] = self.position[0] + characterSize[0]
+        shurikenPosition[0] = self.position[0] + characterSize[0] / 2
       shuriken = PR_Shuriken(self.screen, self.name, shurikenPosition, self.direction)
       projectileList.append(shuriken)
       self.attackRefreshingRemainingFrames = self.attackRefreshingFrameDuration 
   
-  def Move(self, movements, resolution) :
+  def Move(self, movements) :
     if self.attackRefreshingRemainingFrames > 0 :
       self.attackRefreshingRemainingFrames = self.attackRefreshingRemainingFrames - 1
-    Pc.Move(self, movements, resolution)
+    Pc.Move(self, movements)
+
     

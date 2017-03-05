@@ -10,12 +10,11 @@ class PR_Stick(Projectile):
     self.subjectToCollision = 0
     self.ownerName = owner
     self.active = False
-  def Move(self, resolution):
+  def Move(self):
     if self.frameDuration == 0 :
       self.frameDuration = 15
       self.active = False
-      print("duration ended")
-    Projectile.Move(self, resolution)
+    Projectile.Move(self)
   def SetActive(self, active):
     self.active = active  
   def IsActive(self):

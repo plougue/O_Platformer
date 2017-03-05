@@ -9,13 +9,16 @@ from Obstacle import *
 
 class World:
   'Base class for the world of the game'
-  def __init__(self, resolution, backgroundImage, characterName, fps):
-    self.resolution = resolution
-    self.gravity = 1
+  def __init__(self, cameraResolution, backgroundImage, characterName, fps):
+   
+    # Scrolling, screen management
+    self.resolution = cameraResolution
+    #self.worldResolution = worldResolution
     self.background = pygame.image.load("Sprites/Backgrounds/"+ backgroundImage+".png")
-    self.background = pygame.transform.scale(self.background, resolution)
-    print(self.background.get_rect())
+    self.background = pygame.transform.scale(self.background, self.resolution)
     self.screen = 0 # has to be initialized in the mainLoop() method
+    
+    self.gravity = 1
     self.pc = 0 # has to beinitialized in the mainiLoop() method
     self.npcList = []
     self.obstacleList = []
@@ -25,6 +28,7 @@ class World:
     self.characterName = characterName
     self.fps = fps
     self.actualFps = fps # will be calculated every frame
+    self.lastActualFps = 30 * [fps]
 
     # HUD IMAGES
     self.fullHeartImage = pygame.image.load("Sprites/Hud/Health/FullHeart.png")
@@ -49,7 +53,7 @@ class World:
     while stayInLoop:
       frameDuration = clock.tick(self.fps)
       self.actualFps = 1000.0/frameDuration
-      movementsKeys = {'left' : 0, 'right' : 0, 'up' : 0, 'sdown' : 0}
+      movementsKeys = {'left' : 0, 'right' : 0, 'up' : 0, 'down' : 0}
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           stayInLoop = 0
@@ -93,7 +97,7 @@ class World:
       ## DEALING WITH NPCS
       deadNpcList = []
       for npc in self.npcList:
-        npc.Move(self.resolution)
+        npc.Move()
         self.CheckCollisions(npc, 'Npc')
         npc.blit()
         if npc.IsDead():
@@ -103,15 +107,24 @@ class World:
       
       ## DEALING WITH PCS
       if not(self.pc.IsDead()) :
-        self.pc.Move(movementKeys, self.resolution)
-        self.pc.Act(actionKeys, self.resolution, self.projectileList)
-        self.CheckCollisions(self.pc, 'Pc')
-        self.pc.blit()
+        self.pc.Move(movementKeys)
+        self.pc.Act(actionKeys, self.projectileList)
+      else :
+        self.pc.Move({'left': False, 'down' : False, 'up' : False, 'right' : False})
+        self.pc.Act({'attack' : False}, self.projectileList)
+      self.CheckCollisions(self.pc, 'Pc')
+      self.pc.blit()
       
+      for name in self.characterPool :
+        if name != self.pc.GetName() :
+          self.characterPool[name].Move({'left': False, 'down' : False, 'up' : False, 'right' : False})
+          self.CheckCollisions(self.characterPool[name], 'Pc')
+          self.characterPool[name].blit(False)
+
       ## DEALING WITH PROJECTILES
       toRemoveProjectileList = []
       for projectile in self.projectileList:
-        projectile.Move(self.resolution)
+        projectile.Move()
         self.CheckCollisions(projectile, 'Projectile')
         projectile.blit()
         if projectile.IsToBeDeleted():
@@ -200,8 +213,11 @@ class World:
       itemPosition[1] = 0
       collision['up'] = True
 
+    applyObstacleCollision = True
+    if itemType == 'Projectile' :
+      applyObstacleCollision = False
     for currentObstacle in self.obstacleList :
-      currentCollision = self.CollidesWith(item, currentObstacle, True)
+      currentCollision = self.CollidesWith(item, currentObstacle, applyObstacleCollision)
       collision['right'] = collision['right'] or currentCollision['right']
       collision['left'] = collision['left'] or currentCollision['left']
       collision['up'] = collision['up'] or currentCollision['up']
@@ -210,11 +226,8 @@ class World:
     if(itemType == 'Pc') :
       for currentNpc in self.npcList :
         npcCollision = self.CollidesWith(item, currentNpc, False)
-        if (npcCollision['left'] or npcCollision['right'] or npcCollision['up'] or npcCollision['down']) :
+        if (npcCollision['left'] or npcCollision['right'] or npcCollision['up'] or npcCollision['down']) and itemType == 'Pc' :
           item.TakeDamage(1)
-          print("taking damage")
-          print(item.GetPosition())
-          print(currentNpc.GetPosition())
 
 
     if(itemType == 'Pc' or itemType == 'Npc') :
@@ -228,6 +241,8 @@ class World:
     item.SetPosition(itemPosition)
     
   def DisplayHud(self):
+    del self.lastActualFps[0]
+    self.lastActualFps.append(self.actualFps)
     heartHeight = self.fullHeartImage.get_height()
     heartWidth = self.fullHeartImage.get_width()
     for i in range(self.pc.GetMaxHp()) : 
@@ -239,8 +254,10 @@ class World:
         self.screen.blit(self.fullHeartImage, heartPosition)
     if self.pc.IsDead() :
       self.screen.blit(self.pc.deathSprite, [self.resolution[0] - 50 -  self.pc.deathSprite.get_width(), 1.2 * heartHeight])
+    else :
+      self.screen.blit(self.pc.image, [self.resolution[0] - 50 -  self.pc.image.get_width(), 1.2 * heartHeight])
     myfont = pygame.font.SysFont("Comic Sans MS", 30)
-    label = myfont.render("fps: " + str(int(self.actualFps)), 1, [200,0,200])
+    label = myfont.render("fps: " + str(int(sum(self.lastActualFps)/float(len(self.lastActualFps)))), 1, [200,0,200])
     self.screen.blit(label, (0,0))
 
 
