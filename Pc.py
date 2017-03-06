@@ -1,5 +1,7 @@
 import pygame
 from Character import Character
+from pg_functions import correctedBlit
+
 
 class Pc(Character):
 
@@ -19,21 +21,21 @@ class Pc(Character):
   def Attack(self, projectileList) :
     return 0
 
-  def blit(self, active = True):
+  def Display(self, cameraPosition, active = True):
     if active and not(self.dead): 
-      Character.blit(self)
+      Character.Display(self, cameraPosition)
     elif self.dead :
       if self.direction != self.spriteDirection :
-        self.screen.blit(pygame.transform.flip(self.deathSprite, True, False), self.position)
+        correctedBlit(self.screen,pygame.transform.flip(self.deathSprite, True, False), self.position, cameraPosition)
       else :
-        self.screen.blit(self.deathSprite, self.position)
+        correctedBlit(self.screen,self.deathSprite, self.position, cameraPosition)
     else:
       if self.direction != self.spriteDirection :
-        self.screen.blit(pygame.transform.flip(self.inactiveSprite, True, False), self.position)
+        correctedBlit(self.screen,pygame.transform.flip(self.inactiveSprite, True, False), self.position, cameraPosition)
       else :
-        self.screen.blit(self.inactiveSprite, self.position)
+        correctedBlit(self.screen,self.inactiveSprite, self.position, cameraPosition)
 
-    self.DisplayHp()
+    self.DisplayHp(cameraPosition)
 
   def GetSize(self):
     if not self.dead:

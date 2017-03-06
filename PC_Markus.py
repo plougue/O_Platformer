@@ -1,6 +1,7 @@
 import pygame
 from Pc import Pc
 from PR_Fireball import PR_Fireball
+from pg_functions import correctedBlit
 
 class PC_Markus(Pc):
 
@@ -68,7 +69,7 @@ class PC_Markus(Pc):
   def Move(self, movements):
     lastFrameDirection = self.direction
     Pc.Move(self, movements)
-  def blit(self, active = True):
+  def Display(self, cameraPosition, active = True):
     if not self.dead and active :
       del self.lastPositions[0]
       self.lastPositions.append(self.position)
@@ -76,9 +77,9 @@ class PC_Markus(Pc):
       self.lastDirections.append(self.direction)
       for i in range(self.displayTamponSize):
         if self.lastDirections[i] == 'right':
-          self.screen.blit(self.spiritImageReverse,self.lastPositions[i])
+          correctedBlit(self.screen, self.spiritImageReverse,self.lastPositions[i], cameraPosition)
         if self.lastDirections[i]  == 'left':
-          self.screen.blit(self.spiritImage,self.lastPositions[i])
+          correctedBlit(self.screen, self.spiritImage,self.lastPositions[i], cameraPosition)
     if not active :
       for i in range(self.displayTamponSize):
         self.lastPositions[i] =  self.position
@@ -95,6 +96,6 @@ class PC_Markus(Pc):
           fireballPosition[0] = characterPosition[0] + characterSize[0]
         if self.direction == 'left' :
           fireballPosition[0] = characterPosition[0] - spriteSize[0]
-        self.screen.blit(chargingFireballSprite, fireballPosition)
+        correctedBlit(self.screen,chargingFireballSprite, fireballPosition, cameraPosition)
         self.spriteNumber = i 
-    Pc.blit(self, active)
+    Pc.Display(self, cameraPosition, active)

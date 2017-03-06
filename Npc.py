@@ -1,6 +1,7 @@
 import pygame
 from Character import Character
 from random import random
+from pg_functions import correctedBlit
 
 class Npc(Character):
 
@@ -41,7 +42,7 @@ class Npc(Character):
       else:
         Character.Move(self, {'left':1, 'right':0, 'up':0, 'down':0})
   
-  def blit(self):
-    Character.blit(self)
-    self.DisplayHp()
+  def Display(self,cameraPosition):
+    Character.Display(self, cameraPosition)
+    self.DisplayHp(cameraPosition)
 

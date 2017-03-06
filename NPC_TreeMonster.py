@@ -43,19 +43,19 @@ class NPC_TreeMonster(Npc):
     Npc.DeclareCollision(self, directions)
 
 
-  def blit(self):
+  def Display(self, cameraPosition):
     ## Tampon management
-    del self.lastPositions[0]
-    self.lastPositions.append(self.position)
-    del self.lastDirections[0] 
-    self.lastDirections.append(self.direction)
-    for i in range(self.displayTamponSize*self.framesBetweenTampon):
-      if i%self.framesBetweenTampon == 0:
-        if self.lastDirections[i] == 'right':
-          pg_functions.blit_alpha(self.screen, self.spiritImageReverse, self.lastPositions[i], 150 + (1.0*i)/self.displayTamponSize * 105)
-        if self.lastDirections[i]  == 'left':
-          pg_functions.blit_alpha(self.screen, self.spiritImage, self.lastPositions[i], 150 + (1.0*i)/self.displayTamponSize * 105)
-    Npc.blit(self)
+    #del self.lastPositions[0]
+    #self.lastPositions.append(self.position)
+    #del self.lastDirections[0] 
+    #self.lastDirections.append(self.direction)
+    #for i in range(self.displayTamponSize*self.framesBetweenTampon):
+    #  if i%self.framesBetweenTampon == 0:
+    #    if self.lastDirections[i] == 'right':
+    #      pg_functions.blit_alpha(self.screen, self.spiritImageReverse, self.lastPositions[i], 150 + (1.0*i)/self.displayTamponSize * 105)
+    #    if self.lastDirections[i]  == 'left':
+    #      pg_functions.blit_alpha(self.screen, self.spiritImage, self.lastPositions[i], 150 + (1.0*i)/self.displayTamponSize * 105)
+    Npc.Display(self, cameraPosition)
 
   def Move(self):
     if self.direction == 'right':

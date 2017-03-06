@@ -1,4 +1,5 @@
 import pygame
+from pg_functions import correctedBlit
 
 class Obstacle:
   def __init__(self, screen, obstacleName, position, repeats):
@@ -14,9 +15,9 @@ class Obstacle:
         self.blockPositions.append(currentBlockPosition)
     self.size = [currentBlockPosition[2] * repeats[0], currentBlockPosition[3] * repeats[1]]
 
-  def blit(self):
+  def Display(self, cameraPosition):
     for currentBlockPosition in self.blockPositions:
-      self.screen.blit(self.image, currentBlockPosition)
+      correctedBlit(self.screen,self.image, currentBlockPosition, cameraPosition)
 
   def GetPosition(self):
     return self.position

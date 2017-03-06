@@ -1,4 +1,5 @@
 import pygame
+from pg_functions import correctedBlit
 
 class Character:
   'Base class for the playable character'
@@ -67,31 +68,39 @@ class Character:
     if self.remainingJumps == self.numberOfJumps and not(directions['down']): 
       self.remainingJumps = self.remainingJumps - 1
 
-  def blit(self):
+  def Display(self,cameraPosition):
     if self.direction != self.spriteDirection :
-      self.screen.blit(pygame.transform.flip(self.image, True, False), self.position)
+      correctedBlit(self.screen,pygame.transform.flip(self.image, True, False), self.position, cameraPosition)
     else :
-      self.screen.blit(self.image, self.position)
+      correctedBlit(self.screen,self.image, self.position, cameraPosition)
 
-  def DisplayHp(self):
-    totalLineLength = 50
-    linePosition = [0,0]
-    characterPosition =  self.GetPosition()
+  def DisplayHp(self, cameraPosition):
+    screenSize = self.screen.get_size()
     characterSize = self.GetSize()
-    linePosition[0] = characterPosition[0] + (characterSize[0] - totalLineLength) / 2 
-    linePosition[1] = characterPosition[1] - 30
-    greenLineLength = totalLineLength * (float(self.currentHp) / self.maxHp)
-    greenLineEndPosition = [0,0]
-    lineEndPosition = [0,0]
-    greenLineEndPosition[1] = linePosition[1]
-    lineEndPosition[1] = linePosition[1]
-    greenLineEndPosition[0] = linePosition[0] + greenLineLength
-    lineEndPosition[0] = linePosition[0] + totalLineLength
-    if self.currentHp > 0 :
-      greenLine = pygame.draw.line(self.screen, [0,200,0], linePosition, greenLineEndPosition,10)
-    if self.currentHp < self.maxHp :
-      redLine = pygame.draw.line(self.screen, [200,0,0], greenLineEndPosition, lineEndPosition,10)
-    
+    characterPosition = self.GetPosition()
+    blitPosition=[0,0]
+    blitPosition[0] = characterPosition[0] - cameraPosition[0]
+    blitPosition[1] = characterPosition[1] - cameraPosition[1]
+    if ( blitPosition[0] >= 0 or blitPosition[0] + characterSize[0] <= screenSize[0] ) \
+      and (blitPosition[1] >= 0 or blitPosition[1] + characterSize[1] <= screenSize[1]) :
+      totalLineLength = 50
+      linePosition = [0,0]
+      characterPosition =  self.GetPosition()
+      characterSize = self.GetSize()
+      linePosition[0] = characterPosition[0] + (characterSize[0] - totalLineLength) / 2  - cameraPosition[0]
+      linePosition[1] = characterPosition[1] - 30 - cameraPosition[1]
+      greenLineLength = totalLineLength * (float(self.currentHp) / self.maxHp)
+      greenLineEndPosition = [0,0]
+      lineEndPosition = [0,0]
+      greenLineEndPosition[1] = linePosition[1] 
+      lineEndPosition[1] = linePosition[1]
+      greenLineEndPosition[0] = linePosition[0] + greenLineLength
+      lineEndPosition[0] = linePosition[0] + totalLineLength    
+      if self.currentHp > 0 :
+        greenLine = pygame.draw.line(self.screen, [0,200,0], linePosition, greenLineEndPosition,10)
+      if self.currentHp < self.maxHp :
+        redLine = pygame.draw.line(self.screen, [200,0,0], greenLineEndPosition, lineEndPosition,10) 
+  
   def Act(self, actions, projectileList) :
     if(actions['attack']) :
       self.Attack(projectileList)

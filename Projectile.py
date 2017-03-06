@@ -1,4 +1,5 @@
 import pygame
+from pg_functions import correctedBlit
 
 class Projectile:
   'Base class for the playable character'
@@ -35,12 +36,12 @@ class Projectile:
     if (directions['right'] or directions['up'] or directions['down'] or directions['left']) :
       self.toBeDeleted = 1
 
-  def blit(self):
+  def Display(self, cameraPosition):
     if not self.toBeDeleted:
       if self.direction == self.spriteDirection :
-        self.screen.blit(self.image, self.position)
+        correctedBlit(self.screen, self.image, self.position, cameraPosition)
       else :
-        self.screen.blit(pygame.transform.flip(self.image, True, False), self.position)
+        correctedBlit(self.screen,pygame.transform.flip(self.image, True, False), self.position, cameraPosition)
   def Move(self) :
     if self.frameDuration ==  0 :
       self.toBeDeleted = 1

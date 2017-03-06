@@ -10,11 +10,12 @@ class PR_Shuriken(Projectile):
     self.rotation = 0
     self.rotationSpeed = 15
 
-  def blit(self):
+  def Display(self, cameraPosition):
     if self.direction == 'right' :
       self.rotation = self.rotation + self.rotationSpeed
     if self.direction == 'left' :
+
       self.rotation = self.rotation - self.rotationSpeed
     
-    self.screen.blit(pygame.transform.rotate(self.image, self.rotation), self.position)
+    correctedBlit(self.screen, pygame.transform.rotate(self.image, self.rotation), self.position, cameraPosition)
 

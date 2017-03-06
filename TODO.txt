@@ -1,9 +1,4 @@
 * Add a superclass Item that has the member methods GetPosition() DeclareCollision() GetSize() for every physical object in the game
 (Parent class of Obstacle, Character, Projectile, class used for the CheckCollision() function )
 
-* Add an option for projectile to hit every opponent once and only once, in order to not have to fuck with frame invicibility. Add two types of pnj, those who can be hit multiple time by a projectile (big bosses, TreeMonster), and those who can be hit once by every projectile.
-Add projectile that can never hit multiple times like maybe PR_Stick ??
-
-* Add scrolling to the mix
-
 * Think about separating hitbox from image size

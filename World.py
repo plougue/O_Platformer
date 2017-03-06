@@ -6,14 +6,20 @@ from PR_Shuriken import *
 from Pc import *
 from Npc import *
 from Obstacle import *
+from pg_functions import correctedBlit
 
 class World:
   'Base class for the world of the game'
-  def __init__(self, cameraResolution, backgroundImage, characterName, fps):
+  def __init__(self, cameraResolution, worldResolution, backgroundImage, characterName, fps):
    
     # Scrolling, screen management
     self.resolution = cameraResolution
-    #self.worldResolution = worldResolution
+    self.worldResolution = worldResolution
+
+    self.scrollingMargin = [self.resolution[0] / 2.0 - 50, self.resolution[1] / 2.0]
+
+    self.cameraPosition = [0,self.worldResolution[1] - self.resolution[1]]
+
     self.background = pygame.image.load("Sprites/Backgrounds/"+ backgroundImage+".png")
     self.background = pygame.transform.scale(self.background, self.resolution)
     self.screen = 0 # has to be initialized in the mainLoop() method
@@ -45,7 +51,7 @@ class World:
     self.characterPool = {"Markus" : PC_Markus(self.screen), "Yvan" : PC_Yvan(self.screen), "Luc" : PC_Luc(self.screen)}
     self.pc = self.characterPool[self.characterName]
   
-    self.pc.blit()
+    self.pc.Display(self.cameraPosition)
     pygame.display.flip()
     stayInLoop = 1
     pygame.key.set_repeat(400,30)
@@ -99,7 +105,7 @@ class World:
       for npc in self.npcList:
         npc.Move()
         self.CheckCollisions(npc, 'Npc')
-        npc.blit()
+        npc.Display(self.cameraPosition)
         if npc.IsDead():
           deadNpcList.append(npc)
       for npcToRemove in deadNpcList :
@@ -113,20 +119,20 @@ class World:
         self.pc.Move({'left': False, 'down' : False, 'up' : False, 'right' : False})
         self.pc.Act({'attack' : False}, self.projectileList)
       self.CheckCollisions(self.pc, 'Pc')
-      self.pc.blit()
+      self.pc.Display(self.cameraPosition)
       
       for name in self.characterPool :
         if name != self.pc.GetName() :
           self.characterPool[name].Move({'left': False, 'down' : False, 'up' : False, 'right' : False})
           self.CheckCollisions(self.characterPool[name], 'Pc')
-          self.characterPool[name].blit(False)
+          self.characterPool[name].Display(self.cameraPosition,False)
 
       ## DEALING WITH PROJECTILES
       toRemoveProjectileList = []
       for projectile in self.projectileList:
         projectile.Move()
         self.CheckCollisions(projectile, 'Projectile')
-        projectile.blit()
+        projectile.Display(self.cameraPosition)
         if projectile.IsToBeDeleted():
           toRemoveProjectileList.append(projectile)
       for projectileToRemove in toRemoveProjectileList :
@@ -134,10 +140,30 @@ class World:
       
       ## DEALING WITH OBSTACLES
       for obstacle in self.obstacleList:
-        obstacle.blit()
+        obstacle.Display(self.cameraPosition)
       self.DisplayHud()
       pygame.display.flip()
 
+      ## SCROLLING
+      playerPosition = self.pc.GetPosition()
+      if (playerPosition[0] + self.scrollingMargin[0] > self.resolution[0] + self.cameraPosition[0]):
+        self.cameraPosition[0] = playerPosition[0] + self.scrollingMargin[0] - self.resolution[0]
+      if (playerPosition[0] - self.scrollingMargin[0] < self.cameraPosition[0]):
+        self.cameraPosition[0] = playerPosition[0] - self.scrollingMargin[0]
+      if (playerPosition[1] + self.scrollingMargin[1] > self.resolution[1] + self.cameraPosition[1]):
+        self.cameraPosition[1] = playerPosition[1] + self.scrollingMargin[1] - self.resolution[1]
+      if (playerPosition[1] - self.scrollingMargin[1] < self.cameraPosition[1]):
+        self.cameraPosition[1] = playerPosition[1] - self.scrollingMargin[1]
+      
+      if self.cameraPosition[0] < 0 :
+        self.cameraPosition[0] = 0
+      if self.cameraPosition[0] + self.resolution[0] > self.worldResolution[0] :
+        self.cameraPosition[0] = self.worldResolution[0] - self.resolution[0]
+      if self.cameraPosition[1] < 0 :
+        self.cameraPosition[1] = 0
+      if self.cameraPosition[1] + self.resolution[1] > self.worldResolution[1] :
+        self.cameraPosition[1] = self.worldResolution[1] - self.resolution[1]
+      print(self.cameraPosition)
   # Checks if (position1, size1) is aligned to (position2, size2)
   def AreAligned(self,position1, size1, position2, size2) :
       if (position1 > position2 and position1 < position2 + size2) or (position1 + size1 > position2 and position1 + size1 < position2 + size2) \
@@ -199,19 +225,19 @@ class World:
     itemSize = item.GetSize()
     itemLastFramePosition = item.GetLastFramePosition()
     collision = {'up' : False, 'down' : False,'left' : False,'right' : False}
-    if (itemPosition[0] + itemSize[0] >= self.resolution[0]) :
-      itemPosition[0] = self.resolution[0] - itemSize[0]
-      collision['right'] = True
-     # Has to be not strict because we want the player to stick to the ground for jumping purpose
-    if (itemPosition[1] + itemSize[1] >= self.resolution[1]) : 
-      itemPosition[1] = self.resolution[1] - itemSize[1]
-      collision['down'] = True
-    if (itemPosition[0] <= 0):
-      itemPosition[0] = 0
-      collision['left'] = True
-    if (itemPosition[1] <= 0):               
-      itemPosition[1] = 0
-      collision['up'] = True
+   # if (itemPosition[0] + itemSize[0] >= self.resolution[0]) :
+  #    itemPosition[0] = self.resolution[0] - itemSize[0]
+ #     collision['right'] = True
+
+    #if (itemPosition[1] + itemSize[1] >= self.resolution[1]) : 
+     # itemPosition[1] = self.resolution[1] - itemSize[1]
+    #  collision['down'] = True
+   # if (itemPosition[0] <= 0):
+  #    itemPosition[0] = 0
+   #   collision['left'] = True
+  #  if (itemPosition[1] <= 0):               
+ #     itemPosition[1] = 0
+#      collision['up'] = True
 
     applyObstacleCollision = True
     if itemType == 'Projectile' :
@@ -258,8 +284,10 @@ class World:
     else :
       self.screen.blit(self.pc.image, [self.resolution[0] - 50 -  self.pc.image.get_width(), 1.2 * heartHeight])
     myfont = pygame.font.SysFont("Comic Sans MS", 30)
-    label = myfont.render("fps: " + str(int(sum(self.lastActualFps)/float(len(self.lastActualFps)))), 1, [200,0,200])
-    self.screen.blit(label, (0,0))
+    characterName = myfont.render(self.pc.GetName(), 1, [0,200,0])
+    fps = myfont.render("fps: " + str(int(sum(self.lastActualFps)/float(len(self.lastActualFps)))), 1, [0,200,0])
+    self.screen.blit(fps, (0,0))
+    self.screen.blit(characterName, [self.resolution[0] - 50 - self.pc.image.get_width(), 1.2*heartHeight + self.pc.image.get_height()])
 
 
   def InitiateNpcs(self):
