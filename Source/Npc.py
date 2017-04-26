@@ -25,7 +25,9 @@ class Npc(Character):
     if directions['left'] and self.direction == 'left' :
       self.direction = 'right'
     Character.DeclareCollision(self,directions)
-    
+  
+  def Act(self, projectileList):
+    Character.Act(self, {'attack': False}, projectileList) 
   def Move(self):
     if self.direction == 'right':
       if random() < 0.2 :

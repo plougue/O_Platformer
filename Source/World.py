@@ -6,7 +6,7 @@ from PR_Shuriken import *
 from Pc import *
 from Npc import *
 from Obstacle import *
-from pg_functions import correctedBlit
+from pg_functions import correctedBlit, screenPrint
 
 class World:
   'Base class for the world of the game'
@@ -42,7 +42,7 @@ class World:
 
   def MainLoop(self):
     pygame.init()
-    self.screen = pygame.display.set_mode(self.resolution)
+    self.screen = pygame.display.set_mode(self.resolution, pygame.FULLSCREEN)
 
     self.InitiateObstacles()
     self.InitiateNpcs()
@@ -98,12 +98,18 @@ class World:
               print(firstKey)
               self.pc = self.characterPool[firstKey] 
               self.characterName = firstKey
+          if keys[pygame.K_q]:
+            stayInLoop = 0
+          if keys[pygame.K_s]:
+            print("NEXT !!")
+            return 0
       self.screen.blit(self.background, [0,0])
 
       ## DEALING WITH NPCS
       deadNpcList = []
       for npc in self.npcList:
         npc.Move()
+        npc.Act(self.projectileList)
         self.CheckCollisions(npc, 'Npc')
         npc.Display(self.cameraPosition)
         if npc.IsDead():
@@ -129,6 +135,7 @@ class World:
 
       ## DEALING WITH PROJECTILES
       toRemoveProjectileList = []
+      self.projectileList = self.RemoveOutOfMap(self.projectileList)
       for projectile in self.projectileList:
         projectile.Move()
         self.CheckCollisions(projectile, 'Projectile')
@@ -137,6 +144,9 @@ class World:
           toRemoveProjectileList.append(projectile)
       for projectileToRemove in toRemoveProjectileList :
         self.projectileList.remove(projectileToRemove)
+
+
+      screenPrint(self.screen, str(len(self.projectileList)))
       
       ## DEALING WITH OBSTACLES
       for obstacle in self.obstacleList:
@@ -163,7 +173,23 @@ class World:
         self.cameraPosition[1] = 0
       if self.cameraPosition[1] + self.resolution[1] > self.worldResolution[1] :
         self.cameraPosition[1] = self.worldResolution[1] - self.resolution[1]
-      print(self.cameraPosition)
+
+
+    return 1
+  
+  # Remove from the Item list every object that is out of map 
+  def RemoveOutOfMap(self,itemList) :
+    for item in itemList :
+      itemPosition = item.GetPosition()
+      itemSize = item.GetSize()
+      if (itemPosition[0] > self.worldResolution[0]) or \
+        (itemPosition[1] > self.worldResolution[1]) or \
+        (itemPosition[0] + itemSize[0] < 0) or \
+        (itemPosition[1] + itemSize[1] < 0) :
+        itemList.remove(item)
+    return itemList
+
+
   # Checks if (position1, size1) is aligned to (position2, size2)
   def AreAligned(self,position1, size1, position2, size2) :
       if (position1 > position2 and position1 < position2 + size2) or (position1 + size1 > position2 and position1 + size1 < position2 + size2) \
@@ -219,29 +245,14 @@ class World:
       return collisions
 
   def CheckCollisions(self, item, itemType):
-    if itemType == 'Projectile' and not(item.CanCollide()) :
-      return 0
     itemPosition = item.GetPosition()
     itemSize = item.GetSize()
     itemLastFramePosition = item.GetLastFramePosition()
     collision = {'up' : False, 'down' : False,'left' : False,'right' : False}
-   # if (itemPosition[0] + itemSize[0] >= self.resolution[0]) :
-  #    itemPosition[0] = self.resolution[0] - itemSize[0]
- #     collision['right'] = True
-
-    #if (itemPosition[1] + itemSize[1] >= self.resolution[1]) : 
-     # itemPosition[1] = self.resolution[1] - itemSize[1]
-    #  collision['down'] = True
-   # if (itemPosition[0] <= 0):
-  #    itemPosition[0] = 0
-   #   collision['left'] = True
-  #  if (itemPosition[1] <= 0):               
- #     itemPosition[1] = 0
-#      collision['up'] = True
 
     applyObstacleCollision = True
     if itemType == 'Projectile' :
-      applyObstacleCollision = False
+      applyObstacleCollision = item.CanCollide()
     for currentObstacle in self.obstacleList :
       currentCollision = self.CollidesWith(item, currentObstacle, applyObstacleCollision)
       collision['right'] = collision['right'] or currentCollision['right']

@@ -15,24 +15,24 @@ class PC_Yvan(Pc):
     self.attackRefreshingRemainingFrames = 0 
 
     # X-movement related arguments 
-    self.xMaxSpeed = 15
+    self.xMaxSpeed = 16.5
     self.xStartAcceleration = 2   # How much speed the first input gives
     self.xSlowDown = self.xMaxSpeed/15.0    # How quickly the character slows down
-    self.xAcceleration = self.xMaxSpeed/15.0    # How quickly he accelerates
+    self.xAcceleration = self.xMaxSpeed/17.0    # How quickly he accelerates
     
     # Gravity
-    self.gravity = 0.95
+    self.gravity = 0.55
     
     # Jump related arguments
     self.numberOfJumps = 1
     self.ySpeed = 0
-    self.jumpSpeed = 21.5    # Initial jump speed
-    self.jumpAcceleration = 0.45   # How fast the character gains speed until maxJumpSpeed
+    self.jumpSpeed = 11    # Initial jump speed
+    self.jumpAcceleration = 1.3   # How fast the character gains speed until maxJumpSpeed
     self.maxAccelerationFrames = 14
     self.accelerationFramesRemaining = 0
     self.canAccelerateJump = 1   # [BOOL] can the character accelerate his jump ? 
     self.remainingJumps = 0    # [BOOL] can the character jump ?
-    self.nextJumpsRatio = 0.5   # How reduced is the speed given by the jumps after the first ?
+    self.nextJumpsRatio = 0.7   # How reduced is the speed given by the jumps after the first ?
     self.jumpFreze = 0   # The jump is frozen until the up command is cancelled
     self.direction = 'left'
     self.lookingDirection = 'left'
@@ -50,7 +50,7 @@ class PC_Yvan(Pc):
         shurikenPosition[0] = self.position[0] - characterSize[0] / 2
       else :
         shurikenPosition[0] = self.position[0] + characterSize[0] / 2
-      shuriken = PR_Shuriken(self.screen, self.name, shurikenPosition, self.direction)
+      shuriken = PR_Shuriken(self.screen, self.name, self, self.direction)
       projectileList.append(shuriken)
       self.attackRefreshingRemainingFrames = self.attackRefreshingFrameDuration 
   

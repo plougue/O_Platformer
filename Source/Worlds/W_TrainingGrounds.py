@@ -6,7 +6,7 @@ from World import *
 class W_TrainingGrounds(World):
   'Base class for the world of the game'
   def __init__(self):
-    World.__init__(self, [1200,700], "CalmValley", "Markus", 60)
+    World.__init__(self, [1200,700], [1400,800], "CalmValley", "Markus", 60)
  
   def InitiateNpcs(self):
     return 1

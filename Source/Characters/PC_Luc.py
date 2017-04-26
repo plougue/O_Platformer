@@ -18,24 +18,24 @@ class PC_Luc(Pc):
     self.stick = PR_Stick(self.screen, self.name)
 
     # X-movement related arguments 
-    self.xMaxSpeed = 25
+    self.xMaxSpeed = 19
     self.xStartAcceleration = 3   # How much speed the first input gives
     self.xSlowDown = self.xMaxSpeed/10.0    # How quickly the character slows down
-    self.xAcceleration = self.xMaxSpeed/30.0    # How quickly he accelerates
+    self.xAcceleration = self.xMaxSpeed/23.0    # How quickly he accelerates
     
     # Gravity
     self.gravity = 0.55
     
     # Jump related arguments
-    self.numberOfJumps = 4
+    self.numberOfJumps = 3
     self.ySpeed = 0
-    self.jumpSpeed = 7.5   # Initial jump speed
+    self.jumpSpeed = 10   # Initial jump speed
     self.jumpAcceleration = 0.6   # How fast the character gains speed until maxJumpSpeed
     self.maxAccelerationFrames = 10
     self.accelerationFramesRemaining = 0
     self.canAccelerateJump = 1   # [BOOL] can the character accelerate his jump ? 
     self.remainingJumps = 0    # [BOOL] can the character jump ?
-    self.nextJumpsRatio = 0.8   # How reduced is the speed given by the jumps after the first ?
+    self.nextJumpsRatio = 0.9   # How reduced is the speed given by the jumps after the first ?
     self.jumpFreze = 0   # The jump is frozen until the up command is cancelled
     self.direction = 'left'
     self.lookingDirection = 'left'

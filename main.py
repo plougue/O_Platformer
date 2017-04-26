@@ -11,6 +11,11 @@ elif diff == 1 :
 else :
   gameWorld = W_OtherWorld("Hard")
 
-cProfile.run(gameWorld.MainLoop())
-
+while gameWorld.MainLoop() == 0 :
+  if diff == 0 :
+    gameWorld = W_TrainingGrounds()
+  elif diff == 1 :
+    gameWorld = W_OtherWorld("Easy")
+  else :
+    gameWorld = W_OtherWorld("Hard")
 

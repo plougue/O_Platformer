@@ -3,6 +3,7 @@ import pg_functions
 from Npc import Npc
 from Character import Character
 
+
 class NPC_TreeMonster(Npc):
 
   'Base class for TreeMonster'
@@ -33,6 +34,10 @@ class NPC_TreeMonster(Npc):
     self.lastPositions = []
     self.lastDirections = []
 
+    self.framesBetweenHeal = 4 # How much frames between two heals ?
+    self.healRemainingFrames = 4 # How much frames untill heal ?
+    self.healAmount = 1 # How much heal ?
+    
     self.spriteDirection = 'left'
     for i in range(self.displayTamponSize * self.framesBetweenTampon):
       self.lastPositions.append(self.position)
@@ -43,19 +48,14 @@ class NPC_TreeMonster(Npc):
     Npc.DeclareCollision(self, directions)
 
 
-  def Display(self, cameraPosition):
-    ## Tampon management
-    #del self.lastPositions[0]
-    #self.lastPositions.append(self.position)
-    #del self.lastDirections[0] 
-    #self.lastDirections.append(self.direction)
-    #for i in range(self.displayTamponSize*self.framesBetweenTampon):
-    #  if i%self.framesBetweenTampon == 0:
-    #    if self.lastDirections[i] == 'right':
-    #      pg_functions.blit_alpha(self.screen, self.spiritImageReverse, self.lastPositions[i], 150 + (1.0*i)/self.displayTamponSize * 105)
-    #    if self.lastDirections[i]  == 'left':
-    #      pg_functions.blit_alpha(self.screen, self.spiritImage, self.lastPositions[i], 150 + (1.0*i)/self.displayTamponSize * 105)
-    Npc.Display(self, cameraPosition)
+  def Act(self, projectileList):
+    Npc.Act(self, projectileList) 
+    if(self.healRemainingFrames == 0) :
+      self.healRemainingFrames = self.framesBetweenHeal
+      maxHealAmount = self.maxHp - self.currentHp
+      self.currentHp = self.currentHp + min((maxHealAmount, self.healAmount))
+    else :
+      self.healRemainingFrames = self.healRemainingFrames - 1
 
   def Move(self):
     if self.direction == 'right':

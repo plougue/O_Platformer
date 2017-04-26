@@ -17,3 +17,8 @@ def correctedBlit(screen, image, position, cameraPosition) :
   if ( blitPosition[0] >= 0 or blitPosition[0] + imageSize[0] <= screenSize[0] ) \
     and (blitPosition[1] >= 0 or blitPosition[1] + imageSize[1] <= screenSize[1]) :
     screen.blit(image, blitPosition)
+
+def screenPrint(screen, string) :
+  myfont = pygame.font.SysFont("Comic Sans MS", 30)
+  labelString = myfont.render(string, 1, [0,200,0])
+  screen.blit(labelString, (0,35))

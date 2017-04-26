@@ -59,16 +59,29 @@ class PC_Markus(Pc):
 
   def Act(self, actions, projectileList) :
     if not actions['attack'] and self.framesCharged > 0 :
-      self.framesCharged = 0 
 
       characterPosition = self.GetPosition()
       characterSize = self.GetSize()
       
-      projectileList.append(PR_Fireball(self.screen, "Markus", self.position,  self.direction, self.spriteNumber, self.framesCharged))
+      fireballPosition = [0,0]
+      
+      if self.direction == 'right':
+        fireballPosition[0] = characterPosition[0] + characterSize[0]
+      if self.direction == 'left':
+        fireballPosition[0] = characterPosition[0] - self.chargingFireballSpriteList[self.spriteNumber].get_width() + 15
+
+      fireballPosition[1] = characterPosition[1] - 15
+
+
+      projectileList.append(PR_Fireball(self.screen, "Markus", self,  self.direction, self.spriteNumber, self.framesCharged))
+      self.framesCharged = 0 
+      self.spriteNumber = 0 
     Pc.Act(self, actions, projectileList)
+
   def Move(self, movements):
     lastFrameDirection = self.direction
     Pc.Move(self, movements)
+
   def Display(self, cameraPosition, active = True):
     if not self.dead and active :
       del self.lastPositions[0]
@@ -96,6 +109,6 @@ class PC_Markus(Pc):
           fireballPosition[0] = characterPosition[0] + characterSize[0]
         if self.direction == 'left' :
           fireballPosition[0] = characterPosition[0] - spriteSize[0]
-        correctedBlit(self.screen,chargingFireballSprite, fireballPosition, cameraPosition)
+        correctedBlit(self.screen, chargingFireballSprite, fireballPosition, cameraPosition)
         self.spriteNumber = i 
     Pc.Display(self, cameraPosition, active)

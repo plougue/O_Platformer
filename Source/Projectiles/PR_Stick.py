@@ -2,13 +2,14 @@ import pygame
 from Projectile import *
 
 class PR_Stick(Projectile):
-  def __init__(self, screen, owner, initialPosition = [0,0], direction = 'right'):
-    Projectile.__init__(self, screen, "Stick", initialPosition, direction)
+  def __init__(self, screen, owner, itemToStickTo = False, direction = 'right'):
+    Projectile.__init__(self, screen, "Stick", itemToStickTo, direction)
     self.xSpeed = 0
-    self.damageDealt = 3
-    self.frameDuration = 15
+    self.damageDealt = 4
+    self.frameDuration = 18
     self.subjectToCollision = 0
     self.ownerName = owner
+
     self.active = False
   def Move(self):
     if self.frameDuration == 0 :

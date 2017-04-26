@@ -1,20 +1,12 @@
 import pygame
+from Item import Item
 from pg_functions import correctedBlit
 
-class Character:
+class Character(Item):
   'Base class for the playable character'
   def __init__(self, screen, characterName, spritePath, initialPosition=[0,0]):
   
-    # General character arguments
-    self.screen = screen
-    self.name = characterName
-    self.image = pygame.image.load(spritePath).convert_alpha()
-    self.position = self.image.get_rect()
-    self.position[0] = initialPosition[0]
-    self.position[1] = initialPosition[1]
-    self.lastFramePosition = self.position
-
-    self.spriteDirection = 'left'
+    Item.__init__(self, screen, characterName, spritePath, initialPosition)
 
     # General combat arguments
     self.dead = 0
@@ -54,6 +46,7 @@ class Character:
   ##    CHANGES THE STATE ACCORDINGLY IF A COLLISION OCCURS                  ##
   #############################################################################
   def DeclareCollision(self, directions):
+    Item.DeclareCollision(self, directions)
     if (directions['down'] and self.ySpeed > 0) or (directions['up'] and self.ySpeed < 0) :
       self.ySpeed = 0
     if (directions['left'] and self.xSpeed < 0)  or (directions['right'] and self.xSpeed > 0) : 
@@ -67,12 +60,6 @@ class Character:
     # Basically, if the character falls down he loses a jump
     if self.remainingJumps == self.numberOfJumps and not(directions['down']): 
       self.remainingJumps = self.remainingJumps - 1
-
-  def Display(self,cameraPosition):
-    if self.direction != self.spriteDirection :
-      correctedBlit(self.screen,pygame.transform.flip(self.image, True, False), self.position, cameraPosition)
-    else :
-      correctedBlit(self.screen,self.image, self.position, cameraPosition)
 
   def DisplayHp(self, cameraPosition):
     screenSize = self.screen.get_size()
@@ -96,9 +83,9 @@ class Character:
       lineEndPosition[1] = linePosition[1]
       greenLineEndPosition[0] = linePosition[0] + greenLineLength
       lineEndPosition[0] = linePosition[0] + totalLineLength    
-      if self.currentHp > 0 :
+      if greenLineLength >= 1 :
         greenLine = pygame.draw.line(self.screen, [0,200,0], linePosition, greenLineEndPosition,10)
-      if self.currentHp < self.maxHp :
+      if totalLineLength - greenLineLength >= 1 :
         redLine = pygame.draw.line(self.screen, [200,0,0], greenLineEndPosition, lineEndPosition,10) 
   
   def Act(self, actions, projectileList) :
@@ -106,9 +93,7 @@ class Character:
       self.Attack(projectileList)
 
   def Move(self,movements) :
-
-    self.lastFramePosition = self.position
-
+    Item.Move(self, movements)
     ### Change frame counters
     if self.invulnerabilityRemainingFrames > 0 :
       self.invulnerabilityRemainingFrames = self.invulnerabilityRemainingFrames - 1
@@ -184,22 +169,6 @@ class Character:
   def Die(self):
     self.currentHp = 0
     self.dead = 1
-
-  def GetLastFramePosition(self):
-    return self.lastFramePosition
-
-  def GetPosition(self):
-    return self.position
-  
-  def GetSize(self):
-    return (self.image.get_width(), self.image.get_height())
-  
-  def GetName(self):
-    return self.name
-
-  def SetPosition(self,newPosition):
-    self.position[1] = newPosition[1]
-    self.position[0] = newPosition[0]
 
   def AddProjectileImmunity(self,projectile) :
     if(self.subjectToProjectileImmunity) :
