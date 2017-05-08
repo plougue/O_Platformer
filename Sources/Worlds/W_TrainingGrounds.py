@@ -1,7 +1,7 @@
-from Pc import *
-from Npc import *
-from Obstacle import *
-from World import *
+from Sources.Pc import *
+from Sources.Npc import *
+from Sources.Obstacle import *
+from Sources.World import *
 
 class W_TrainingGrounds(World):
   'Base class for the world of the game'

@@ -1,6 +1,5 @@
 import pygame
-from Npc import Npc
-from Character import Character
+from Sources.Npc import Npc
 
 class NPC_SploshyMan(Npc):
 

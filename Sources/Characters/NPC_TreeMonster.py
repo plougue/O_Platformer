@@ -1,7 +1,6 @@
 import pygame
-import pg_functions
-from Npc import Npc
-from Character import Character
+import Sources.pg_functions
+from Sources.Npc import Npc
 
 
 class NPC_TreeMonster(Npc):
@@ -27,7 +26,7 @@ class NPC_TreeMonster(Npc):
     self.numberOfJumps = 0
 
     # Spirit sprite related arguments
-    self.spiritImage = pygame.image.load("Sprites/Characters/Npc/TreeMonster/TreeMonster_spirit.png")
+    self.spiritImage = pygame.image.load("../../Sprites/Characters/Npc/TreeMonster/TreeMonster_spirit.png")
     self.spiritImageReverse = pygame.transform.flip(self.spiritImage, True, False) 
     self.displayTamponSize = 3
     self.framesBetweenTampon = 1

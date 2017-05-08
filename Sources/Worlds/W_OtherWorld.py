@@ -1,10 +1,8 @@
-from Pc import *
-from Npc import *
-from NPC_TreeMonster import *
-from NPC_Gargoyle import *
-from NPC_SploshyMan import *
-from Obstacle import *
-from World import *
+from Sources.Characters.NPC_TreeMonster import *
+from Sources.Characters.NPC_Gargoyle import *
+from Sources.Characters.NPC_SploshyMan import *
+from Sources.Obstacle import *
+from Sources.World import *
 
 class W_OtherWorld(World):
   'Base class for the world of the game'

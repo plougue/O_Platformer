@@ -1,5 +1,5 @@
 import pygame
-from Projectile import *
+from Sources.Projectile import *
 
 class PR_Shuriken(Projectile):
   def __init__(self, screen, owner, initialPosition = [0,0], direction = 'right'):

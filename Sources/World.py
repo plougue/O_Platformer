@@ -1,8 +1,7 @@
 
-from PC_Markus import *
-from PC_Yvan import *
-from PC_Luc import *
-from PR_Shuriken import *
+from Characters.PC_Markus import *
+from Characters.PC_Yvan import *
+from Characters.PC_Luc import *
 from Pc import *
 from Npc import *
 from Obstacle import *

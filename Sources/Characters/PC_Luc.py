@@ -1,6 +1,6 @@
 import pygame
-from Pc import Pc
-from PR_Stick import *
+from Sources.Pc import Pc
+from Sources.Projectiles.PR_Stick import *
 
 class PC_Luc(Pc):
 

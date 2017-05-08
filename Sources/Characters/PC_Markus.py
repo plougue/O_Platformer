@@ -1,7 +1,7 @@
 import pygame
-from Pc import Pc
-from PR_Fireball import PR_Fireball
-from pg_functions import correctedBlit
+from Sources.Pc import Pc
+from Sources.Projectiles.PR_Fireball import PR_Fireball
+from Sources.pg_functions import correctedBlit
 
 class PC_Markus(Pc):
 

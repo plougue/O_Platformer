@@ -1,5 +1,5 @@
 import pygame
-from Projectile import *
+from Sources.Projectile import *
 
 class PR_Fireball(Projectile):
   def __init__(self, screen, owner, itemToStickTo = False, direction = 'right', spriteNumber = 1, framesCharged = 1):

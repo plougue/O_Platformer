@@ -1,7 +1,6 @@
 import pygame
-from PR_Shuriken import *
-
-from Pc import Pc
+from Sources.Projectiles.PR_Shuriken import *
+from Sources.Pc import Pc
 
 class PC_Yvan(Pc):
 

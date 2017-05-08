@@ -1,5 +1,5 @@
-from W_TrainingGrounds import *
-from W_OtherWorld import *
+from Sources.Worlds.W_TrainingGrounds import *
+from Sources.Worlds.W_OtherWorld import *
 import cProfile  
 
 print("Quelle difficulte ? 0/1/2")
