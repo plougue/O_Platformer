@@ -1,5 +1,5 @@
 # O_Platformer
-An object platformer made with python and a called library called pygame.
+An object platformer made with python and pygame.
 
 ## Controls :
 * Q = Exit game
