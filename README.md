@@ -1,9 +1,7 @@
 # O_Platformer
 An object platformer made with python and pygame.
 
-**I HAVE NOT MADE AND DO NOT OWN ANY OF THE SPRITES AND IMAGES**
-
-They have been integrated for illustration purposes
+**NONE OF THE SPRITES AND IMAGES ARE MINE**, They have been integrated for illustration purposes
 
 ## Controls :
 * Q = Exit game
